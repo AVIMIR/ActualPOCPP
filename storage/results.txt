@@ -1,0 +1,2 @@
+ID: 1, 'X' player name: a, 'O' player name: b
+ID: 2, 'X' player name: aboba, 'O' player name: freakster1337, result: 2
