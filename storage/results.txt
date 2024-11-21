@@ -1,2 +1,3 @@
-ID: 1, 'X' player name: a, 'O' player name: b
-ID: 2, 'X' player name: aboba, 'O' player name: freakster1337, result: 2
+ID: 1, X-player name: x, O-player name: y, result: -2
+ID: 2, X-player name: why, O-player name: because, result: -2
+ID: 3, X-player name: aboba, O-player name: boombox, result: -2
