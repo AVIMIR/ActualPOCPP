@@ -50,7 +50,6 @@ Cell makeCell(char sign, int x, int y) {
 	return cell;
 }
 
-
 Cell winningSequence[LENGTH_OF_WINNING_SEQUENCE];
 short gameIdIsAcquired = 0;
 unsigned long long gameID;
@@ -58,8 +57,7 @@ char gameIdString[BUFFER_SIZE] = {0};
 char board[BOARD_HEIGHT][BOARD_WIDTH];
 char playersNames[PLAYER_COUNT][MAX_PLAYER_NAME_LENGTH];
 
-
-int checkIfCellIsInWinningSequence(Cell cell) {
+int checkIfCellIsInWinningSequence(const Cell cell) {
 	for (int i = 0; i < 4; i++) {
 		if (cell.x == winningSequence[i].x && cell.y == winningSequence[i].y) {
 			return IN_WINNING_SEQUENCE;
@@ -67,7 +65,6 @@ int checkIfCellIsInWinningSequence(Cell cell) {
 	}
 	return NOT_IN_WINNING_SEQUENCE;
 }
-
 
 void getGameId(void) {
 	char pathToPreviousGameId[BUFFER_SIZE] = "..\\storage\\previousGameID.txt";
@@ -99,7 +96,7 @@ void getAndUpdateGameId(void) {
 	updateGameId();
 }
 
-char chooseSignToDisplay(Cell cellOnBoard, int win) {
+char chooseSignToDisplay(const Cell cellOnBoard, int win) {
 	// This function decides what sign to show: which is on the board ('O' or 'X') or 'Y' which indicates that smb won
 
 	int cellIsInWinningSequence = checkIfCellIsInWinningSequence(cellOnBoard);
@@ -110,19 +107,16 @@ char chooseSignToDisplay(Cell cellOnBoard, int win) {
 	return cellOnBoard.sign;
 }
 
-int displayBoard(char anyBoard[BOARD_HEIGHT][BOARD_WIDTH], int displayWin, int separate) {
+int displayBoard(const char anyBoard[BOARD_HEIGHT][BOARD_WIDTH], int displayWin, int separate) {
 	if (separate) {
 		printf(SEPARATOR_LINE);
 	}
 
-	char signToDisplay;
-	char signOnBoard;
-	Cell cell;
 	for (int i = 0; i < BOARD_HEIGHT; i++) {
 		for (int j = 0; j < BOARD_WIDTH; j++) {
-			signOnBoard = anyBoard[i][j];
-			cell = makeCell(signOnBoard, j, i);
-			signToDisplay = chooseSignToDisplay(cell, displayWin);
+			char signOnBoard = anyBoard[i][j];
+			Cell cell = makeCell(signOnBoard, j, i);
+			char signToDisplay = chooseSignToDisplay(cell, displayWin);
 			printf("%c", signToDisplay);
 		}
 		printf("\n");
@@ -141,7 +135,7 @@ char chooseSignBasedOnTurn(int turn) {
 	}
 }
 
-int checkIfCellIsEmpty(char cell) {
+int checkIfCellIsEmpty(const char cell) {
 	return !(cell == 'X' || cell == 'O');
 }
 
@@ -188,12 +182,11 @@ void saveGame(int turn) {
 	if (!gameIdIsAcquired) {
 		getAndUpdateGameId();
 	}
-	printf("%d", gameID);
 
 	strcat(pathToGames, gameIdString);
 	strcat(pathToGames, ".txt");
 
-	printf("%s\n", pathToGames);
+	printf("Game has been successfully saved in %s\n", pathToGames);
 
 	int emptyCells = countEmptyCells(board);
 
@@ -231,7 +224,7 @@ void getPlayersNames() {
 
 }
 
-void copyBoard(char destination[BOARD_HEIGHT][BOARD_WIDTH], char source[BOARD_HEIGHT][BOARD_WIDTH]) {
+void copyBoard(char destination[BOARD_HEIGHT][BOARD_WIDTH], const char source[BOARD_HEIGHT][BOARD_WIDTH]) {
 	for (int i = 0; i < BOARD_HEIGHT; i++) {
 		for (int j = 0; j < BOARD_WIDTH; j++) {
 			destination[i][j] = source[i][j];
@@ -239,7 +232,7 @@ void copyBoard(char destination[BOARD_HEIGHT][BOARD_WIDTH], char source[BOARD_HE
 	}
 }
 
-int initializeBoard() {
+int initializeBoard(char board[BOARD_HEIGHT][BOARD_WIDTH]) {
 	// Fills the board with periods to avoid unsupported behavior
 
 	for (int i = 0; i < BOARD_HEIGHT; i++) {
@@ -267,7 +260,7 @@ void saveResult(int gameResult) {
 
 	fclose(resultFile);
 }
-int getInputInBoundaries(char *textToPrint, int leftBoundary, int rightBoundary) {
+int getInputInBoundaries(const char *textToPrint, int leftBoundary, int rightBoundary) {
 	int input = -1;
 
 	do {
@@ -279,17 +272,19 @@ int getInputInBoundaries(char *textToPrint, int leftBoundary, int rightBoundary)
 }
 
 
-int initializeGame() {
+int initializeGame(int GameIsLoaded, int loadedTurn) {
 	// Prepares the game to play
-
+	gameIdIsAcquired = 0;
+	if (GameIsLoaded) {
+		return loadedTurn;
+	}
 	getPlayersNames(playersNames);
 	initializeBoard(board);
-	displayPlayersNames(playersNames);
 
-	return SUCCESSFUL_EXECUTION;
+	return 1;
 }
 
-int checkIfFourCharactersInWinningSequenceAreSame(char sign) {
+int checkIfFourCharactersInWinningSequenceAreSame(const char sign) {
 	// Checks if all the cells in 'winningSequence' array have the same character ('X' or 'Y')
 
 	for (int i = 0; i < 4; i++) {
@@ -300,7 +295,7 @@ int checkIfFourCharactersInWinningSequenceAreSame(char sign) {
 	return CONNECTED;
 }
 
-void formHorizontalSequence(Cell startingCellInSequence) {
+void formHorizontalSequence(const Cell startingCellInSequence) {
 	// Fills 'winningSequence' array with four horizontally consecutive cells
 
 	int y = startingCellInSequence.y;
@@ -314,7 +309,7 @@ void formHorizontalSequence(Cell startingCellInSequence) {
 	}
 }
 
-void formVerticalSequence(Cell startingCellInSequence) {
+void formVerticalSequence(const Cell startingCellInSequence) {
 	// Fills 'winningSequence' array with four vertically consecutive cells
 
 	int y = startingCellInSequence.y;
@@ -327,7 +322,7 @@ void formVerticalSequence(Cell startingCellInSequence) {
 		winningSequence[i].y = y + i;
 	}
 }
-void formDiagonalTangentNegativeSequence(Cell startingCellInSequence) {
+void formDiagonalTangentNegativeSequence(const Cell startingCellInSequence) {
 	// Fills 'winningSequence' array with four diagonally (whose slope is negative) consecutive cells
 
 	int y = startingCellInSequence.y;
@@ -340,7 +335,7 @@ void formDiagonalTangentNegativeSequence(Cell startingCellInSequence) {
 		winningSequence[i].y = y + i;
 	}
 }
-void formDiagonalTangentPositiveSequence(Cell startingCellInSequence) {
+void formDiagonalTangentPositiveSequence(const Cell startingCellInSequence) {
 	// Fills 'winningSequence' array with four diagonally (whose slope is positive) consecutive cells
 
 	int y = startingCellInSequence.y;
@@ -357,7 +352,7 @@ void formDiagonalTangentPositiveSequence(Cell startingCellInSequence) {
 
 int checkWinCondition(int turn) {
 	char sign = chooseSignBasedOnTurn(turn);
-	Cell startingCell;
+
 
 	int connectedFourHorizontally = 0;
 	int connectedFourVertically = 0;
@@ -365,10 +360,8 @@ int checkWinCondition(int turn) {
 	int connectedFourDiagonallyTangentPositive = 0;
 
 	for (int i = 0; i < BOARD_HEIGHT; i++) {
-		startingCell.y = i;
 		for (int j = 0; j < BOARD_WIDTH; j++) {
-			startingCell.x = j;
-			startingCell.sign = board[i][j];
+			const Cell startingCell = makeCell(board[i][j], j, i);
 			if (j < 4) {
 				formHorizontalSequence(startingCell);
 				connectedFourHorizontally = checkIfFourCharactersInWinningSequenceAreSame(sign);
@@ -432,10 +425,10 @@ int checkGameEndConditions(int turn) {
 	return CONTINUE;
 }
 
-int simulateGame() {
+int simulateGame(int loadedTurn) {
 	// Game main loop
-
-	int turn = 1, playerInput = 0, gameEnd = 0, column = -1;
+	int turn = loadedTurn;
+	int playerInput = 0, gameEnd = 0;
 	int emptyCellLineNumber = -1;
 	while (!gameEnd) {
 
@@ -448,7 +441,7 @@ int simulateGame() {
 			continue;
 		}
 
-		column = playerInput-1;
+		int column = playerInput-1;
 		emptyCellLineNumber = findFirstEmptyCellFromBottomOfColumn(column);
 		if (emptyCellLineNumber == ILLEGAL_MOVE_FULL_COLUMN) {
 			printf("Illegal move: there is no free space in this column");
@@ -493,16 +486,24 @@ void displayBoardBaseOnGameResult(int gameResult) {
 	}
 }
 
-void playGameOption() {
-	initializeGame();
+int playGameOption(int GameIsLoaded, int loadedTurn) {
+	int turn = initializeGame(GameIsLoaded, loadedTurn);
 
-	int gameResult = simulateGame();
+	int gameResult = simulateGame(turn);
 	displayBoardBaseOnGameResult(gameResult);
 
 	if (!gameIdIsAcquired) {
 		getAndUpdateGameId();
 	}
+
 	saveResult(gameResult);
+
+	printf("What would you like to do?\n");
+	printf("1) Play a new game\n");
+	printf("2) Return to main menu\n");
+	int option = getInputInBoundaries("", 1, 2);
+	option = option*(-1) + 2;
+	return option;
 }
 
 
@@ -517,8 +518,7 @@ void displayLoadGameMenu() {
 
 void getBoardFromFile(FILE *savedGameFile, char boardPlaceHolder[BOARD_HEIGHT][BOARD_WIDTH]) {
 	int y = 0, x = 0;
-	char ch;
-	ch = fgetc(savedGameFile); // get first whitespace symbol
+	char ch = fgetc(savedGameFile); // get first whitespace symbol
 	while ((ch = fgetc(savedGameFile)) != EOF && y < BOARD_HEIGHT) {
 		if (ch == '\0') {
 			continue;
@@ -534,44 +534,33 @@ void getBoardFromFile(FILE *savedGameFile, char boardPlaceHolder[BOARD_HEIGHT][B
 	}
 }
 
-void getGameInfo(char *gameIdToDisplay, char *xPlayerName, char *oPlayerName, char *numberOfEmptyCells, char *turn, char boardPlaceHolder[BOARD_HEIGHT][BOARD_WIDTH]) {
-	char pathToSavedGameFile[BUFFER_SIZE] = "..\\storage\\games\\";
+void readLineOfSavedGameFile(FILE *savedGameFile, char *placeHolder) {
 	char dummy[BUFFER_SIZE];
+
+	if (placeHolder != NULL) {
+		fscanf(savedGameFile, "%s", placeHolder);
+	} else {
+		fscanf(savedGameFile, "%s", dummy);
+	}
+}
+
+void getGameInfo(const char *gameIdToDisplay, char *xPlayerName, char *oPlayerName, char *numberOfEmptyCells, char *turn, char boardPlaceHolder[BOARD_HEIGHT][BOARD_WIDTH]) {
+	char pathToSavedGameFile[BUFFER_SIZE] = "..\\storage\\games\\";
 
 	strcat(pathToSavedGameFile, gameIdToDisplay);
 	strcat(pathToSavedGameFile, ".txt");
 
 	FILE *savedGameFile = fopen(pathToSavedGameFile, "r");
 
-	fscanf(savedGameFile, "%s", dummy);
-
-	if (xPlayerName != NULL) {
-		fscanf(savedGameFile, "%s", xPlayerName);
-	} else {
-		fscanf(savedGameFile, "%s", dummy);
-	}
-
-	if (oPlayerName != NULL) {
-		fscanf(savedGameFile, "%s", oPlayerName);
-	} else {
-		fscanf(savedGameFile, "%s", dummy);
-	}
-
-	if (numberOfEmptyCells != NULL) {
-		fscanf(savedGameFile, "%s", numberOfEmptyCells);
-	} else {
-		fscanf(savedGameFile, "%s", dummy);
-	}
-
-	if (turn != NULL) {
-		fscanf(savedGameFile, "%s", turn);
-	} else {
-		fscanf(savedGameFile, "%s", dummy);
-	}
-
+	readLineOfSavedGameFile(savedGameFile, NULL); // read game id from a file (not useful in program execution)
+	readLineOfSavedGameFile(savedGameFile, xPlayerName);
+	readLineOfSavedGameFile(savedGameFile, oPlayerName);
+	readLineOfSavedGameFile(savedGameFile, numberOfEmptyCells);
+	readLineOfSavedGameFile(savedGameFile, turn);
 	if (boardPlaceHolder != NULL) {
 		getBoardFromFile(savedGameFile, boardPlaceHolder);
 	}
+
 
 	fclose(savedGameFile);
 }
@@ -583,12 +572,10 @@ void listAllSavedGames() {
 
 	FILE *gamesIdsFile = fopen(pathToGamesIdsFile, "r");
 
-	char numberOfEmptyCells[BUFFER_SIZE];
-	char oPlayerName[BUFFER_SIZE];
-	char xPlayerName[BUFFER_SIZE];
-
 	char gameIdToDisplay[BUFFER_SIZE];
 	while (fscanf(gamesIdsFile, "%s", &gameIdToDisplay) > 0) {
+		char numberOfEmptyCells[BUFFER_SIZE], oPlayerName[BUFFER_SIZE], xPlayerName[BUFFER_SIZE];
+
 		getGameInfo(gameIdToDisplay, xPlayerName, oPlayerName, numberOfEmptyCells, NULL, NULL);
 		printf("%s, %s, %s, %s\n", gameIdToDisplay, xPlayerName, oPlayerName, numberOfEmptyCells);
 	}
@@ -596,7 +583,7 @@ void listAllSavedGames() {
 	fclose(gamesIdsFile);
 }
 
-int checkIfPlayerNameIsInGameInfo(char *playerName, char * xPlayerName, char * oPlayerName) {
+int checkIfPlayerNameIsInGameInfo(const char *playerName, const char *xPlayerName, const char *oPlayerName) {
 	int itIsOPlayer = !strcmp(playerName, oPlayerName);
 	int itIsXPlayer = !strcmp(playerName, xPlayerName);
 
@@ -610,15 +597,13 @@ void listAllSavedGamesForPlayer() {
 
 	FILE *gamesIdsFile = fopen(pathToGamesIdsFile, "r");
 
-	char numberOfEmptyCells[BUFFER_SIZE];
-	char oPlayerName[BUFFER_SIZE];
-	char xPlayerName[BUFFER_SIZE];
 	char playerName[BUFFER_SIZE];
-
 	scanf("%s", playerName);
 
 	char gameIdToCheck[BUFFER_SIZE];
 	while (fscanf(gamesIdsFile, "%s", &gameIdToCheck) > 0) {
+		char numberOfEmptyCells[BUFFER_SIZE], oPlayerName[BUFFER_SIZE], xPlayerName[BUFFER_SIZE];
+
 		getGameInfo(gameIdToCheck, xPlayerName, oPlayerName, numberOfEmptyCells, NULL, NULL);
 
 		int playerNameIsInGameInfo = checkIfPlayerNameIsInGameInfo(playerName, xPlayerName, oPlayerName);
@@ -626,6 +611,8 @@ void listAllSavedGamesForPlayer() {
 			printf("%s, %s, %s, %s\n", gameIdToCheck, xPlayerName, oPlayerName, numberOfEmptyCells);
 		}
 	}
+
+	fclose(gamesIdsFile);
 
 }
 void showTheBoardOfOneSavedGame() {
@@ -643,50 +630,75 @@ void showTheBoardOfOneSavedGame() {
 	displayBoard(boardPlaceHolder, NO_WIN, 0);
 
 }
-void loadGameById() {}
+int loadGameById() {
+	printf(SEPARATOR_LINE);
+	char gameIdToLoad[BUFFER_SIZE];
+	scanf("%s", gameIdToLoad);
 
-void loadGameOption() {
-	displayLoadGameMenu();
-	int inputOption = getInputInBoundaries("", 0, 7);
+	char turn[BUFFER_SIZE];
+	getGameInfo(gameIdToLoad, playersNames[0], playersNames[1], NULL, turn, board);
 
-	switch (inputOption) {
-		case 1:
-			listAllSavedGames();
-			break;
-		case 2:
-			listAllSavedGamesForPlayer();
-			break;
-		case 3:
-			showTheBoardOfOneSavedGame();
-			break;
-		case 4:
-			loadGameById();
-			break;
-		case 5:
-			return;
-	}
-
+	const int turnNumber = atoi(turn);
+	return turnNumber;
 }
 
-void exitGameOption() {
+int loadGameOption() {
+	while (1) {
+		displayLoadGameMenu();
+		int inputOption = getInputInBoundaries("", 0, 7);
+
+		switch (inputOption) {
+			case 1:
+				listAllSavedGames();
+			break;
+			case 2:
+				listAllSavedGamesForPlayer();
+			break;
+			case 3:
+				showTheBoardOfOneSavedGame();
+			break;
+			case 4:
+				return loadGameById();
+			default:
+				return SUCCESSFUL_EXECUTION;
+		}
+	}
+}
+
+int exitGameOption() {
 	printf("Thank you for playing! See you next time.\n");
+	return 1;
 }
 
 int main(void) {
 	char placeHolder = 'a';
+	int inputOption;
+	int playAgain = 0;
 
-	displayMainMenu();
-	int inputOption = getInputInBoundaries("", 1, 3);
+	int isExit = 0;
+	while (!isExit) {
+		if (!playAgain) {
+			displayMainMenu();
+			inputOption = getInputInBoundaries("", 1, 3);
+		} else {
+			inputOption = playAgain;
+		}
 
-	switch (inputOption) {
-		case 1:
-			playGameOption();
-			break;
-		case 2:
-			loadGameOption();
-			break;
-		case 3:
-			exitGameOption();
+		switch (inputOption) {
+			case 1:
+				playAgain = playGameOption(0, 1);
+				break;
+			case 2: {
+				int loadedTurn = loadGameOption();
+				if (loadedTurn) {
+					playAgain = playGameOption(1, loadedTurn);
+				}
+				break;
+			}
+				break;
+			case 3:
+				isExit = exitGameOption();
+		}
 	}
 	scanf("%c", &placeHolder);
 	return SUCCESSFUL_EXECUTION;
