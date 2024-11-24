@@ -1,8 +1,5 @@
-ID: 1, X-player name: x, O-player name: y, result: -2
-ID: 2, X-player name: why, O-player name: because, result: -2
-ID: 3, X-player name: aboba, O-player name: boombox, result: -2
-ID: 5, X-player name: first, O-player name: second, result: 2
-ID: 6, X-player name: first, O-player name: second, result: 2
-ID: 7, X-player name: 120, O-player name: happy, result: 2
-ID: 8, X-player name: first, O-player name: second, result: 2
-ID: 8, X-player name: first, O-player name: second, result: 2
+ID: 1, X-player name: <f>, O-player name: <s>, result: X has won!
+ID: 2, X-player name: <f>, O-player name: <t>, result: X has won!
+ID: 3, X-player name: <s>, O-player name: <t>, result: X has won!
+ID: 4, X-player name: <f>, O-player name: <s>, result: X has won!
+ID: 5, X-player name: <f>, O-player name: <s>, result: O has won!
