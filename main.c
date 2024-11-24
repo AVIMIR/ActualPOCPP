@@ -825,6 +825,8 @@ Bool checkGameIdExists(const char *enteredGameId) {
 void showTheBoardOfOneSavedGame(void) {
 	printf(SEPARATOR_LINE);
 	char gameIdToDisplayBoard[BUFFER_SIZE];
+
+	printf("Enter the ID of the game:\n>>")
 	scanf("%s", gameIdToDisplayBoard);
 
 	char oPlayerName[BUFFER_SIZE];
@@ -851,6 +853,8 @@ int loadGameById(void) {
 
 	printf(SEPARATOR_LINE);
 	char gameIdToLoad[BUFFER_SIZE];
+
+	printf("Enter the ID of the game:\n>>")
 	scanf("%s", gameIdToLoad);
 
 	const Bool gameExists = checkGameIdExists(gameIdToLoad);
