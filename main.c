@@ -314,10 +314,6 @@ void saveResult(const GameResult gameResult) {
 	char stringResult[BUFFER_SIZE] = {0};
 	getStringResult(stringResult, gameResult);
 
-	printf("%d\n", gameResult);
-	printf("%s\n", pathToResultsFile);
-	printf("%s\n", stringResult);
-
 	FILE *resultFile = fopen(pathToResultsFile, "a");
 	fprintf(resultFile,"ID: %s, X-player name: <%s>, O-player name: <%s>, result: %s\n",gameIdString,
 		playersNames[0], playersNames[1], stringResult);
