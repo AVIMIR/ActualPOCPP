@@ -3,3 +3,7 @@ ID: 2, X-player name: <f>, O-player name: <t>, result: X has won!
 ID: 3, X-player name: <s>, O-player name: <t>, result: X has won!
 ID: 4, X-player name: <f>, O-player name: <s>, result: X has won!
 ID: 5, X-player name: <f>, O-player name: <s>, result: O has won!
+ID: 6, X-player name: <f>, O-player name: <s>, result: X has won!
+ID: 7, X-player name: <s>, O-player name: <t>, result: X has won!
+ID: 8, X-player name: <first>, O-player name: <second>, result: X has won!
+ID: 9, X-player name: <f>, O-player name: <t>, result: O has won!
